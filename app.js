@@ -2,18 +2,17 @@ var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
 
-var createServer = require("auto-sni");
- 
-var server = createServer({
-  email: "sweun1@naver.com", // Emailed when certificates expire.
-  agreeTos: true, // Required for letsencrypt.
-  debug: false, // Add console messages and uses staging LetsEncrypt server. (Disable in production)
-  domains: ["osschatbot.bu.to"], // List of accepted domain names. (You can use nested arrays to register bundles with LE).
-  dir: "/etc/letsencrypt/live/osschatbot.bu.to", // Directory for storing certificates. Defaults to "~/letsencrypt/etc" if not present.
-  ports: {
-    http: 80, // Optionally override the default http port.
-    https: 443 // // Optionally override the default https port.
-  }
+import greenlock from 'green-express';
+const lex=greenlock.create({
+  version: 'v02',
+  configDir: '/etc/letsencrypt',
+  server:'https://acme-v02.api.letsencrypt.org/directory',
+  email:'sweun1@naver.com',
+  approveDomains:['www.osschatbot.bu.to','osschatbot.bu.to'],
+  agreeTos:true,
+  renewWithin:90*24*60*60*1000,
+  renewBy:89*24*60*60*1000
+
 });
 
 //papago api
