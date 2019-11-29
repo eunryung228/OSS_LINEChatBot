@@ -2,6 +2,19 @@ var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
 
+const https = require('https');
+const fs = require('fs');
+const options = {
+  ca: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem'),
+  key: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem')
+};
+
+https.createServer(options, (req, res) => {
+  res.writeHead(200);
+  res.end('hello world\n');
+}).listen(8000);
+
 
 //papago api
 var request = require('request');
@@ -110,6 +123,3 @@ function handleEvent(event) {
     });
   }
 
-app.listen(443, function () {
-  console.log('Linebot listening on port 3000!');
-});
