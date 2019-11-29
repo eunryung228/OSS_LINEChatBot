@@ -1,8 +1,8 @@
 var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
+var https=require('https');
 
-const https = require('https');
 const fs = require('fs');
 const options = {
   ca: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem'),
@@ -10,11 +10,7 @@ const options = {
   cert: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem')
 };
 
-https.createServer(options, (req, res) => {
-  res.writeHead(200);
-  res.end('hello world\n');
-}).listen(8000);
-
+https.createServer(options, app).listen(443);
 
 //papago api
 var request = require('request');
