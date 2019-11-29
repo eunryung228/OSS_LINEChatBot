@@ -14,18 +14,18 @@ var languagedetect_api_url = 'https://openapi.naver.com/v1/papago/detectLangs'
 
 // Naver Auth Key
 //새로 발급받은 naver papago api id, pw 입력
-var client_id = 'xZMx34y7uru1v8lywZ2d';
-var client_secret = 'p6L7M7WsH9';
+var client_id = 'bIYcswH22VlQqT8OkkLm';
+var client_secret = 'qLaERoks0u';
 
 const config = {
-  channelAccessToken: 'mnny0MJSezgBXzR9C3Ddcc1Csdb7Y9jkvy2nqV5saOmvR2YOJ1/kj/2M0CNsLA+57B2qDpdUQ7WbCTtIKx/LAJ6Kwfop4tX3up7EM8H9EZK1td6GMbhhCb6wvUFVdb1PcTO4joCv8mspd3ubo8a+gAdB04t89/1O/w1cDnyilFU=',
-  channelSecret: 'bde77633a16fc5bfbd532d5990c6170e',
+  channelAccessToken: 'dWno95uZ/FLPM5BoTUIM1kPenQ+UsEHYSWphPWcOxyjS7eylg6jhocxvJCeV8YumuVvYf+3bE/696ZSkOPJitxhXbXDe+1p2WoyCbHzD8KxxF1EKo6zvHfnhsIA8kZS93lNzUTQr1FVWaMmRKl7NzwdB04t89/1O/w1cDnyilFU=',
+  channelSecret: '75a2fd95ec26d716cac6fcdd520b9b9c'
+
 };
 
 
 // create LINE SDK client
 const client = new line.Client(config);
-
 // create Express app
 // about Express itself: https://expressjs.com/
 
@@ -54,7 +54,7 @@ function handleEvent(event) {
       form : {'query': event.message.text},
       headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
     };
-
+    console.log("1");
     //papago 언어 감지
     request.post(detect_options,function(error,response,body){
       console.log(response.statusCode);
