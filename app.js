@@ -110,6 +110,6 @@ function handleEvent(event) {
     });
   }
 
-app.listen(3000, function () {
+app.listen(80, function () {
   console.log('Linebot listening on port 3000!');
 });
