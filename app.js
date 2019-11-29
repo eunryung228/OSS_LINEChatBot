@@ -5,7 +5,7 @@ const line = require('@line/bot-sdk');
 var createServer = require("auto-sni");
  
 var server = createServer({
-  email: sweun1@naver.com, // Emailed when certificates expire.
+  email: "sweun1@naver.com", // Emailed when certificates expire.
   agreeTos: true, // Required for letsencrypt.
   debug: false, // Add console messages and uses staging LetsEncrypt server. (Disable in production)
   domains: ["osschatbot.bu.to"], // List of accepted domain names. (You can use nested arrays to register bundles with LE).
