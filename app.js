@@ -2,18 +2,6 @@ var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
 
-import greenlock from 'greenlock-express';
-const lex=greenlock.create({
-  version: 'v02',
-  configDir: '/etc/letsencrypt',
-  server:'https://acme-v02.api.letsencrypt.org/directory',
-  email:'sweun1@naver.com',
-  approveDomains:['www.osschatbot.bu.to','osschatbot.bu.to'],
-  agreeTos:true,
-  renewWithin:90*24*60*60*1000,
-  renewBy:89*24*60*60*1000
-
-});
 
 //papago api
 var request = require('request');
@@ -122,6 +110,6 @@ function handleEvent(event) {
     });
   }
 
-app.listen(80, function () {
+app.listen(443, function () {
   console.log('Linebot listening on port 3000!');
 });
