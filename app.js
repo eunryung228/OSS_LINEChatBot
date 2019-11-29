@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
 
-import greenlock from 'green-express';
+import greenlock from 'greenlock-express';
 const lex=greenlock.create({
   version: 'v02',
   configDir: '/etc/letsencrypt',
