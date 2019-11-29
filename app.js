@@ -2,6 +2,19 @@ var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
 
+var createServer = require("auto-sni");
+ 
+var server = createServer({
+  email: sweun1@naver.com, // Emailed when certificates expire.
+  agreeTos: true, // Required for letsencrypt.
+  debug: false, // Add console messages and uses staging LetsEncrypt server. (Disable in production)
+  domains: ["osschatbot.bu.to"], // List of accepted domain names. (You can use nested arrays to register bundles with LE).
+  dir: "/etc/letsencrypt/live/osschatbot.bu.to", // Directory for storing certificates. Defaults to "~/letsencrypt/etc" if not present.
+  ports: {
+    http: 80, // Optionally override the default http port.
+    https: 443 // // Optionally override the default https port.
+  }
+});
 
 //papago api
 var request = require('request');
