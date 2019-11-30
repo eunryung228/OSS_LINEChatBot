@@ -13,8 +13,16 @@ key: key,
 cert: cert,
 ca: ca
 }, app).listen(80,()=>{
-  console.log('server on');
+  console.log('server on 80');
 });
+
+https.createServer({
+  key: key,
+  cert: cert,
+  ca: ca
+  }, app).listen(443,()=>{
+    console.log('server on 443');
+  });
 
 //papago api
 var request = require('request');
