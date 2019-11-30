@@ -2,15 +2,17 @@ var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
 var https=require('https');
-
 const fs = require('fs');
-const options = {
-  ca: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem'),
-  key: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem')
-};
 
-https.createServer(options, app).listen(443);
+var key = fs.readFileSync(path.resolve(__dirname, '../cert/key.pem'));
+var cert = fs.readFileSync(path.resolve(__dirname, '../cert/cert.pem'));
+var ca = fs.readFileSync(path.resolve(__dirname, '../cert/cai.pem'));
+
+https.createServer({
+key: key,
+cert: cert,
+ca: ca
+}, app).listen(port);
 
 //papago api
 var request = require('request');
@@ -40,16 +42,9 @@ const client = new line.Client(config);
 
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
-app.post('/webhook', line.middleware(config), (req, res) => {
-  console.log("webhook");
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(200).end();
-    });
-});
+app.get('/',(req,res)=>{
+  res.send("hellow");
+})
 
 // event handler
 function handleEvent(event) {
