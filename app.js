@@ -14,7 +14,6 @@ cert: cert,
 ca: ca
 }, app).listen(80,()=>{
   console.log('server on 80');
-  console.log(status)
 });
 
 https.createServer({
