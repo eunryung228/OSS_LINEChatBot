@@ -4,9 +4,9 @@ const line = require('@line/bot-sdk');
 var https=require('https');
 const fs = require('fs');
 
-var key = fs.readFileSync(path.resolve('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem'));
-var cert = fs.readFileSync(path.resolve('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem'));
-var ca = fs.readFileSync(path.resolve('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem'));
+var key = fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem');
+var cert = fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem');
+var ca = fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem');
 
 https.createServer({
 key: key,
