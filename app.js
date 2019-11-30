@@ -14,6 +14,7 @@ cert: cert,
 ca: ca
 }, app).listen(80,()=>{
   console.log('server on 80');
+  console.log(status)
 });
 
 https.createServer({
@@ -52,10 +53,12 @@ const client = new line.Client(config);
 
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
-app.get('/',(req,res)=>{
-  res.send("hellow");
-})
-
+app.post('/webhook', line.middleware(config), (req, res) => {
+  console.log("webhook");
+  Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+});
 // event handler
 function handleEvent(event) {
   console.log("handleevent");
