@@ -4,15 +4,17 @@ const line = require('@line/bot-sdk');
 var https=require('https');
 const fs = require('fs');
 
-var key = fs.readFileSync(path.resolve(__dirname, '../cert/key.pem'));
-var cert = fs.readFileSync(path.resolve(__dirname, '../cert/cert.pem'));
-var ca = fs.readFileSync(path.resolve(__dirname, '../cert/cai.pem'));
+var key = fs.readFileSync(path.resolve('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem'));
+var cert = fs.readFileSync(path.resolve('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem'));
+var ca = fs.readFileSync(path.resolve('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem'));
 
 https.createServer({
 key: key,
 cert: cert,
 ca: ca
-}, app).listen(port);
+}, app).listen(80,()=>{
+  console.log('server on');
+});
 
 //papago api
 var request = require('request');
