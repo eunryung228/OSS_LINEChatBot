@@ -4,7 +4,7 @@ const line = require('@line/bot-sdk');
 var createServer = require("auto-sni");
 
 
-createServer({ email: "sweun1@naver.com", domains: ["www.oss.chatbot.bu.to","oss.chatbot.bu.to"], agreeTos: true }, app);
+createServer({ email: "sweun1@naver.com", domains: ["www.oss.chatbot.bu.to","oss.chatbot.bu.to"], agreeTos: true }, app);// https
 //papago api
 var request = require('request');
 
