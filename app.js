@@ -8,6 +8,14 @@ app.listen(443,()=>{
     console.log("server on 443");
 })
 
+app.listen(80,()=>{
+    console.log("server on 80");
+})
+
+app.listen(3000,()=>{
+    console.log("server on 80");
+})
+
 //papago api
 var request = require('request');
 
