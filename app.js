@@ -1,13 +1,8 @@
 var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
-var https=require('https');
-const fs = require('fs');
-
-
-app.listen(3000,()=>{
-    console.log("server on 3000");
-})
+var server = grrenlock.create({ version: 'v02', configDir: '/etc/letsencrypt', server: 'https://acme-v02.api.letsencrypt.org/directory', email: '***@gmail.com', approveDomains: ['www.homeauctionmap.com', 'homeauctionmap.com'], //my url, domain 
+agreeTos: true, renewWithin: 90 * 24 * 60 * 60 * 1000, renewBy: 89 * 24 * 60 * 60 * 1000, app: app }).listen(80, 443);
 
 
 //papago api
