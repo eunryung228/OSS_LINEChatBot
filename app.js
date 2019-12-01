@@ -1,12 +1,10 @@
 var express = require('express');
 var app = express();
 const line = require('@line/bot-sdk');
-var greenlock=require('greenlock-express');
-var server = greenlock.create({ version: 'v02', configDir: '/etc/letsencrypt', server: 'https://acme-v02.api.letsencrypt.org/directory', email: 'sweun1@naver.com', 
-approveDomains: ['www.oss.chatbot.bu.to', 'oss.chatbot.bu.to'], //my url, domain 
-agreeTos: true, renewWithin: 90 * 24 * 60 * 60 * 1000, renewBy: 89 * 24 * 60 * 60 * 1000, app: app }).listen(80, 443);
+var createServer = require("auto-sni");
 
 
+createServer({ email: "sweun1@naver.com", domains: ["www.oss.chatbot.bu.to","oss.chatbot.bu.to"], agreeTos: true }, app);
 //papago api
 var request = require('request');
 
