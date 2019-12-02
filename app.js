@@ -4,6 +4,7 @@ var app          = express();
 const line = require('@line/bot-sdk');
 var request = require('request');
 var https=require('https');
+var http=require('http');
 const lex = require('greenlock-express').create({
   version: 'draft-11', // 버전2
   store: require('greenlock-store-fs'),
