@@ -114,7 +114,7 @@ function handleEvent(event) {
                   result.text = objBody.message.result.translatedText;
                   console.log(result);
                   //번역된 문장 보내기
-                  client.replyMessage(event.replyToken,result).then(resolve);
+                  client.replyMessage(event.replyToken,result.text).then(resolve);
               }
           });
         }
