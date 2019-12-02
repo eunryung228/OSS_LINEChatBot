@@ -98,7 +98,7 @@ function handleEvent(event) {
               url:  translate_api_url,
               // 한국어(source : ko), 영어(target: en), 카톡에서 받는 메시지(text)
               form: {'source':source, 'target':target, 'text':event.message.text},
-              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
+              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret,"Content-Type":	"application/x-www-form-urlencoded"}
           };
 
           // Naver Post API
