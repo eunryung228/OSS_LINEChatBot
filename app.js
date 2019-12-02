@@ -11,7 +11,7 @@ const lex = require('greenlock-express').create({
   configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
   approveDomains: (opts, certs, cb) => {
     if (certs) {
-      opts.domains = ['oss.chatbot.bu.to', 'oss.chatbot.bu.to'];
+      opts.domains = ['oss.chatbot.bu.to', 'www.oss.chatbot.bu.to'];
     } else {
       opts.email = 'sweun1@naver.com';
       opts.agreeTos = true;
