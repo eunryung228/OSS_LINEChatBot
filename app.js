@@ -1,3 +1,4 @@
+
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -56,12 +57,10 @@ const client = new line.Client(config);
 
 
 app.post('/webhook', line.middleware(config), (req, res) => {
-console.log(res.statusCode);
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
     .catch((err)=>{console.log(err);
-      console.log(err.originalError.response)
     })
 });
 // event handler
@@ -80,10 +79,8 @@ function handleEvent(event) {
     };
     //papago 언어 감지
     request.post(detect_options, (error,response,body)=>{
-        
       if(!error && response.statusCode == 200){
         var detect_body = JSON.parse(response.body);
-        console.log(detect_body);
         var source = '';
         var target = '';
         var result = { type: 'text', text:''};
@@ -103,7 +100,7 @@ function handleEvent(event) {
               form: {'source':source, 'target':target, 'text':event.message.text},
               headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret,"Content-Type":	"application/x-www-form-urlencoded"}
           };
-
+          
           // Naver Post API
           request.post(options, function(error, response, body){
               // Translate API Sucess
@@ -113,7 +110,6 @@ function handleEvent(event) {
                   // Message 잘 찍히는지 확인
 
                   result.text = objBody.message.result.translatedText;
-                  console.log("source: "+objBody);
                   console.log("result: "+result.text);
                   //번역된 문장 보내기
                   client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
