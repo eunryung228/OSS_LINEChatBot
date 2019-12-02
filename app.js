@@ -1,4 +1,4 @@
-var createServer = require("auto-sni");
+
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -17,6 +17,7 @@ const lex = require('greenlock-express').create({
       opts.agreeTos = true;
     }
     cb(null, { options: opts, certs });
+    
   },
   renewWithin: 81 * 24 * 60 * 60 * 1000,
   renewBy: 80 * 24 * 60 * 60 * 1000,
@@ -80,7 +81,6 @@ function handleEvent(event) {
     };
     //papago 언어 감지
     request.post(detect_options,async (error,response,body)=>{
-      console.log(response.statusCode);
       if(!error && response.statusCode == 200){
         var detect_body = JSON.parse(response.body);
         var source = '';
@@ -112,16 +112,17 @@ function handleEvent(event) {
                   // Message 잘 찍히는지 확인
 
                   result.text = objBody.message.result.translatedText;
-                  console.log(result);
+                  console.log("source: "+objBody);
+                  console.log("result: "+result.text);
                   //번역된 문장 보내기
-                  client.replyMessage(event.replyToken,result.text).then(resolve);
+                  client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
           });
         }
         // 메시지의 언어가 영어 또는 한국어가 아닐 경우
         else{
           result.text = '언어를 감지할 수 없습니다. \n 번역 언어는 한글 또는 영어만 가능합니다.';
-          client.replyMessage(event.replyToken,result).then(resolve);
+          client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
         }
 
       }
