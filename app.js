@@ -3,7 +3,7 @@ var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
 var request = require('request');
-
+var https=require('https');
 const lex = require('greenlock-express').create({
   version: 'draft-11', // 버전2
   configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
