@@ -54,7 +54,7 @@ const client = new line.Client(config);
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
 
-/*
+
 app.post('/webhook', line.middleware(config), (req, res) => {
 console.log(res.statusCode);
   Promise
@@ -76,7 +76,7 @@ function handleEvent(event) {
       headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
     };
     //papago 언어 감지
-    request.post(detect_options,function(error,response,body){
+    request.post(detect_options,async (error,response,body)=>{
       console.log(response.statusCode);
       if(!error && response.statusCode == 200){
         var detect_body = JSON.parse(response.body);
@@ -101,7 +101,7 @@ function handleEvent(event) {
           };
 
           // Naver Post API
-          request.post(options, function(error, response, body){
+          await request.post(options, function(error, response, body){
               // Translate API Sucess
               if(!error && response.statusCode == 200){
                   // JSON
@@ -131,8 +131,3 @@ function handleEvent(event) {
     });
   }
 
-*/
-
-app.get('/',(req,res)=>{
-  res.send("hellow world");
-})
