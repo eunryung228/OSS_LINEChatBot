@@ -50,6 +50,7 @@ const client = new line.Client(config);
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
 app.post('/webhook', line.middleware(config), (req, res) => {
+console.log(res.statusCode);
   console.log("webhook");
   Promise
     .all(req.body.events.map(handleEvent))
