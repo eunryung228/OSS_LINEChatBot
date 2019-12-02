@@ -1,14 +1,26 @@
-var express = require('express');
-var app = express();
-const line = require('@line/bot-sdk');
 var createServer = require("auto-sni");
-
-
-createServer({ email: "sweun1@naver.com", domains: ["www.oss.chatbot.bu.to","oss.chatbot.bu.to"], agreeTos: true }, app);// https
-console.log("1");
-//papago api
+var express      = require("express");
+var app          = express();
+const line = require('@line/bot-sdk');
 var request = require('request');
 
+const lex = require('greenlock-express').create({
+  version: 'draft-11', // 버전2
+  configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
+  approveDomains: (opts, certs, cb) => {
+    if (certs) {
+      opts.domains = ['oss.chatbot.bu.to', 'oss.chatbot.bu.to'];
+    } else {
+      opts.email = 'sweun1@naver.com';
+      opts.agreeTos = true;
+    }
+    cb(null, { options: opts, certs });
+  },
+  renewWithin: 81 * 24 * 60 * 60 * 1000,
+  renewBy: 80 * 24 * 60 * 60 * 1000,
+});//papago api
+
+https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 443);
 //번역 api_url
 var translate_api_url = 'https://openapi.naver.com/v1/papago/n2mt';
 
@@ -25,7 +37,6 @@ const config = {
   channelSecret: '75a2fd95ec26d716cac6fcdd520b9b9c'
 
 };
-
 
 // create LINE SDK client
 const client = new line.Client(config);
