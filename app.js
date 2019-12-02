@@ -55,14 +55,13 @@ const client = new line.Client(config);
 // about the middleware, please refer to doc
 app.post('/webhook', line.middleware(config), (req, res) => {
 console.log(res.statusCode);
-  console.log("webhook");
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
 });
 // event handler
 function handleEvent(event) {
-  console.log("handleevent");
+  console.log(event.message)
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
     return Promise.resolve(null);
@@ -74,7 +73,6 @@ function handleEvent(event) {
       form : {'query': event.message.text},
       headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
     };
-    console.log("1");
     //papago 언어 감지
     request.post(detect_options,function(error,response,body){
       console.log(response.statusCode);
@@ -121,6 +119,9 @@ function handleEvent(event) {
           client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
         }
 
+      }
+      else{
+          console.log("status code is not 200");
       }
 
     });
