@@ -80,7 +80,7 @@ function handleEvent(event) {
       headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
     };
     //papago 언어 감지
-    request.post(detect_options,async (error,response,body)=>{
+    request.post(detect_options, (error,response,body)=>{
       if(!error && response.statusCode == 200){
         var detect_body = JSON.parse(response.body);
         var source = '';
@@ -104,7 +104,7 @@ function handleEvent(event) {
           };
 
           // Naver Post API
-          await request.post(options, function(error, response, body){
+          request.post(options, function(error, response, body){
               // Translate API Sucess
               if(!error && response.statusCode == 200){
                   // JSON
