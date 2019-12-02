@@ -6,6 +6,7 @@ var request = require('request');
 var https=require('https');
 const lex = require('greenlock-express').create({
   version: 'draft-11', // 버전2
+  store: require('greenlock-store-fs'),
   configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
   approveDomains: (opts, certs, cb) => {
     if (certs) {
@@ -19,6 +20,7 @@ const lex = require('greenlock-express').create({
   renewWithin: 81 * 24 * 60 * 60 * 1000,
   renewBy: 80 * 24 * 60 * 60 * 1000,
 });//papago api
+
 
 https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 443);
 //번역 api_url
