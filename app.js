@@ -1,4 +1,3 @@
-
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -100,7 +99,7 @@ function handleEvent(event) {
               form: {'source':source, 'target':target, 'text':event.message.text},
               headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret,"Content-Type":	"application/x-www-form-urlencoded"}
           };
-          
+            console.log("?!");  
           // Naver Post API
           request.post(options, function(error, response, body){
               // Translate API Sucess
