@@ -81,7 +81,6 @@ function handleEvent(event) {
     //papago 언어 감지
     request.post(detect_options,async (error,response,body)=>{
       if(!error && response.statusCode == 200){
-        console.log(response.body);
         var detect_body = JSON.parse(response.body);
         var source = '';
         var target = '';
@@ -112,7 +111,8 @@ function handleEvent(event) {
                   // Message 잘 찍히는지 확인
 
                   result.text = objBody.message.result.translatedText;
-                  console.log(result);
+                  console.log("source: "+objBody);
+                  console.log("result: "+result.text);
                   //번역된 문장 보내기
                   client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
