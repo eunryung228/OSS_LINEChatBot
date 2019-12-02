@@ -1,4 +1,3 @@
-
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -116,7 +115,9 @@ function handleEvent(event) {
                   client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
           });
+          console.log("!?")
         }
+        
         // 메시지의 언어가 영어 또는 한국어가 아닐 경우
         else{
           result.text = '언어를 감지할 수 없습니다. \n 번역 언어는 한글 또는 영어만 가능합니다.';
