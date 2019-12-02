@@ -1,3 +1,4 @@
+
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -97,10 +98,11 @@ function handleEvent(event) {
               url:  translate_api_url,
               // 한국어(source : ko), 영어(target: en), 카톡에서 받는 메시지(text)
               form: {'source':source, 'target':target, 'text':event.message.text},
-              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret,"Content-Type":	"application/x-www-form-urlencoded"}
+              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
           };
-            console.log("?!");  
+          
           // Naver Post API
+          console.log("?!");
           request.post(options, function(error, response, body){
               // Translate API Sucess
               if(!error && response.statusCode == 200){
@@ -114,7 +116,6 @@ function handleEvent(event) {
                   client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
           });
-          console.log("?!");
         }
         // 메시지의 언어가 영어 또는 한국어가 아닐 경우
         else{
