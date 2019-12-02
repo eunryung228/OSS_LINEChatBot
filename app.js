@@ -1,32 +1,34 @@
-var express = require('express');
-var app = express();
+var express      = require("express");
+var app          = express();
 const line = require('@line/bot-sdk');
-var https=require('https');
-const fs = require('fs');
-
-var key = fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem');
-var cert = fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem');
-var ca = fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem');
-
-https.createServer({
-key: key,
-cert: cert,
-ca: ca
-}, app).listen(80,()=>{
-  console.log('server on 80');
-});
-
-https.createServer({
-  key: key,
-  cert: cert,
-  ca: ca
-  }, app).listen(443,()=>{
-    console.log('server on 443');
-  });
-
-//papago api
 var request = require('request');
+var https=require('https');
+var http=require('http');
+const lex = require('greenlock-express').create({
+  version: 'draft-11', // 버전2
+  store: require('greenlock-store-fs'),
+  configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
+  approveDomains: (opts, certs, cb) => {
+    if (certs) {
+      opts.domains = ['oss.chatbot.bu.to', 'oss.chatbot.bu.to'];
+    } else {
+      opts.email = 'sweun1@naver.com';
+      opts.agreeTos = true;
+    }
+    cb(null, { options: opts, certs });
+    
+  },
+  renewWithin: 81 * 24 * 60 * 60 * 1000,
+  renewBy: 80 * 24 * 60 * 60 * 1000,
+});//papago api
 
+
+https.createServer(lex.httpsOptions, lex.middleware(app)).listen((process.env.SSL_PORT || 443),()=>{
+    console.log("server on 443");
+});
+http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80,()=>{
+        console.log("server on 80");
+});
 //번역 api_url
 var translate_api_url = 'https://openapi.naver.com/v1/papago/n2mt';
 
@@ -44,7 +46,6 @@ const config = {
 
 };
 
-
 // create LINE SDK client
 const client = new line.Client(config);
 // create Express app
@@ -52,15 +53,20 @@ const client = new line.Client(config);
 
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
+
+
 app.post('/webhook', line.middleware(config), (req, res) => {
-  console.log("webhook");
+console.log(res.statusCode);
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
+    .catch((err)=>{console.log(err);
+      console.log(err.originalError.response)
+    })
 });
 // event handler
 function handleEvent(event) {
-  console.log("handleevent");
+  console.log(event.message);
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
     return Promise.resolve(null);
@@ -72,11 +78,10 @@ function handleEvent(event) {
       form : {'query': event.message.text},
       headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
     };
-    console.log("1");
     //papago 언어 감지
-    request.post(detect_options,function(error,response,body){
-      console.log(response.statusCode);
+    request.post(detect_options,async (error,response,body)=>{
       if(!error && response.statusCode == 200){
+        console.log(response.body);
         var detect_body = JSON.parse(response.body);
         var source = '';
         var target = '';
@@ -95,11 +100,11 @@ function handleEvent(event) {
               url:  translate_api_url,
               // 한국어(source : ko), 영어(target: en), 카톡에서 받는 메시지(text)
               form: {'source':source, 'target':target, 'text':event.message.text},
-              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
+              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret,"Content-Type":	"application/x-www-form-urlencoded"}
           };
 
           // Naver Post API
-          request.post(options, function(error, response, body){
+          await request.post(options, function(error, response, body){
               // Translate API Sucess
               if(!error && response.statusCode == 200){
                   // JSON
@@ -107,7 +112,7 @@ function handleEvent(event) {
                   // Message 잘 찍히는지 확인
 
                   result.text = objBody.message.result.translatedText;
-                  console.log(result.text);
+                  console.log(result);
                   //번역된 문장 보내기
                   client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
@@ -119,6 +124,9 @@ function handleEvent(event) {
           client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
         }
 
+      }
+      else{
+          console.log("status code is not 200");
       }
 
     });
