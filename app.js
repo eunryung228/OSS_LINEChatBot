@@ -53,6 +53,8 @@ const client = new line.Client(config);
 
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
+
+/*
 app.post('/webhook', line.middleware(config), (req, res) => {
 console.log(res.statusCode);
   Promise
@@ -61,7 +63,7 @@ console.log(res.statusCode);
 });
 // event handler
 function handleEvent(event) {
-  console.log(event.message)
+  console.log(event.message);
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
     return Promise.resolve(null);
@@ -129,3 +131,8 @@ function handleEvent(event) {
     });
   }
 
+*/
+
+app.get('/',(req,res)=>{
+  res.send("hellow world");
+})
