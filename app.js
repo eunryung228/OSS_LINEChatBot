@@ -61,7 +61,7 @@ console.log(res.statusCode);
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
     .catch((err)=>{console.log(err);
-      console.log(err.response)
+      console.log(err.originalError.response)
     })
 });
 // event handler
@@ -112,7 +112,7 @@ function handleEvent(event) {
                   // Message 잘 찍히는지 확인
 
                   result.text = objBody.message.result.translatedText;
-                  console.log(result.text);
+                  console.log(result);
                   //번역된 문장 보내기
                   client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
