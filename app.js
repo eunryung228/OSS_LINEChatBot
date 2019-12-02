@@ -1,4 +1,3 @@
-
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -81,8 +80,10 @@ function handleEvent(event) {
     };
     //papago 언어 감지
     request.post(detect_options, (error,response,body)=>{
+        
       if(!error && response.statusCode == 200){
         var detect_body = JSON.parse(response.body);
+        console.log(detect_body);
         var source = '';
         var target = '';
         var result = { type: 'text', text:''};
