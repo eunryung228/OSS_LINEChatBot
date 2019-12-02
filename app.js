@@ -22,7 +22,9 @@ const lex = require('greenlock-express').create({
 });//papago api
 
 
-https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 443);
+https.createServer(lex.httpsOptions, lex.middleware(app)).listen((process.env.SSL_PORT || 443),()=>{
+    console.log("server on ");
+});
 //번역 api_url
 var translate_api_url = 'https://openapi.naver.com/v1/papago/n2mt';
 
