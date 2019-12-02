@@ -114,14 +114,14 @@ function handleEvent(event) {
                   result.text = objBody.message.result.translatedText;
                   console.log(result);
                   //번역된 문장 보내기
-                  client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
+                  client.replyMessage(event.replyToken,result).then(resolve);
               }
           });
         }
         // 메시지의 언어가 영어 또는 한국어가 아닐 경우
         else{
           result.text = '언어를 감지할 수 없습니다. \n 번역 언어는 한글 또는 영어만 가능합니다.';
-          client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
+          client.replyMessage(event.replyToken,result).then(resolve);
         }
 
       }
