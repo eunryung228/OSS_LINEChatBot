@@ -4,7 +4,7 @@ const line = require('@line/bot-sdk');
 var request = require('request');
 var https=require('https');
 var http=require('http');
-const lex = require('greenlock-express').create({
+const lex = require('greenlock').create({
   version: 'draft-11', // 버전2
   store: require('greenlock-store-fs'),
   configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
