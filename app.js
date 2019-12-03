@@ -71,7 +71,7 @@ var requtil = vision.requtil;
 
 //Prepare your service account from trust preview certificated project
 
-var jsonfile = '/Users/terry/dev/ws/nodejs/GoogleVisionAPISample/My Project-eee0a2d4532a.json';
+var jsonfile = '/home/ubuntu/a/LINEBOT/googlevisionapikey.json';
 
  
 
