@@ -5,22 +5,17 @@ var request = require('request');
 var https=require('https');
 var http=require('http');
 const lex = require('greenlock-express').create({
-  version: 'draft-11', // 버전2
-  store: require('greenlock-store-fs'),
-  configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
-  approveDomains: (opts, certs, cb) => {
-    if (certs) {
-      opts.domains = ['oss.chatbot.bu.to', 'www.oss.chatbot.bu.to'];
-    } else {
-      opts.email = 'sweun1@naver.com';
-      opts.agreeTos = true;
-    }
-    cb(null, { options: opts, certs });
-    
-  },
+  version: 'draft-11',
+  configDir: '/etc/letsencrypt/',
+  email: 'sweun1@naver.com',
+  agreeTos: true,
+  approvedDomains: ['oss.chatbot.bu.to','www.oss.chatbot.bu.to'],
   renewWithin: 81 * 24 * 60 * 60 * 1000,
   renewBy: 80 * 24 * 60 * 60 * 1000,
-});//papago api
+}).listen(80, 443);
+
+
+//papago api
 
 
 https.createServer(lex.httpsOptions, lex.middleware(app)).listen((process.env.SSL_PORT || 443),()=>{
