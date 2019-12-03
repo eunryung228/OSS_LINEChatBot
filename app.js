@@ -1,3 +1,4 @@
+
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -10,7 +11,7 @@ const lex = require('greenlock-express').create({
   configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
   approveDomains: (opts, certs, cb) => {
     if (certs) {
-      opts.domains = ['oss.chatbot.bu.to', 'oss.chatbot.bu.to'];
+      opts.domains = ['oss.chatbot.bu.to', 'www.oss.chatbot.bu.to'];
     } else {
       opts.email = 'sweun1@naver.com';
       opts.agreeTos = true;
@@ -45,7 +46,6 @@ const config = {
   channelSecret: '75a2fd95ec26d716cac6fcdd520b9b9c'
 
 };
-
 // create LINE SDK client
 const client = new line.Client(config);
 // create Express app
@@ -53,15 +53,35 @@ const client = new line.Client(config);
 
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
+const vision = require('@google-cloud/vision');
+
+// Creates a client
+const visionclient = new vision.ImageAnnotatorClient();
+
+/**
+ * TODO(developer): Uncomment the following line before running the sample.
+ */
+// const fileName = 'Local image file, e.g. /path/to/image.png';
+
+// Performs text detection on the local file
+const [result] = await visionclient.textDetection('/home/ubuntu/a/LINEBOT/photo/Fancy-TWICE.jpg');
+const detections = result.textAnnotations;
+console.log('Text:');
+detections.forEach(text => console.log(text));
+
+//Do query to the api server
+vision.query(d, function(e, r, d){
+if(e) console.log('ERROR:', e);
+  console.log(JSON.stringify(d));
+});
+
 
 
 app.post('/webhook', line.middleware(config), (req, res) => {
-console.log(res.statusCode);
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
     .catch((err)=>{console.log(err);
-      console.log(err.originalError.response)
     })
 });
 // event handler
@@ -79,7 +99,7 @@ function handleEvent(event) {
       headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
     };
     //papago 언어 감지
-    request.post(detect_options,async (error,response,body)=>{
+    request.post(detect_options, (error,response,body)=>{
       if(!error && response.statusCode == 200){
         var detect_body = JSON.parse(response.body);
         var source = '';
@@ -99,11 +119,13 @@ function handleEvent(event) {
               url:  translate_api_url,
               // 한국어(source : ko), 영어(target: en), 카톡에서 받는 메시지(text)
               form: {'source':source, 'target':target, 'text':event.message.text},
-              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret,"Content-Type":	"application/x-www-form-urlencoded"}
-          };
+              headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
 
+          };
+          
           // Naver Post API
-          await request.post(options, function(error, response, body){
+          console.log("?!");
+          request.post(options, function(error, response, body){
               // Translate API Sucess
               if(!error && response.statusCode == 200){
                   // JSON
@@ -111,12 +133,12 @@ function handleEvent(event) {
                   // Message 잘 찍히는지 확인
 
                   result.text = objBody.message.result.translatedText;
-                  console.log("source: "+objBody);
                   console.log("result: "+result.text);
                   //번역된 문장 보내기
                   client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
               }
           });
+          console.log("?!")
         }
         // 메시지의 언어가 영어 또는 한국어가 아닐 경우
         else{
