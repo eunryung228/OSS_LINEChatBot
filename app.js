@@ -4,26 +4,40 @@ const line = require('@line/bot-sdk');
 var request = require('request');
 var https=require('https');
 var http=require('http');
-const lex = require('greenlock-express').create({
-  version: 'draft-11',
-  configDir: '/etc/letsencrypt/',
-  email: 'sweun1@naver.com',
-  agreeTos: true,
-  approvedDomains: ['oss.chatbot.bu.to','www.oss.chatbot.bu.to'],
+
+
+var fs = require("fs");
+
+var httpsOptions = {
+    key: fs.readFileSync("/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem")
+};
+
+http.createServer(app).listen(80);
+https.createServer(httpsOptions, app).listen(443);
+/* if ssl expired
+var greenlock= require('greenlock-express');
+const lex = greenlock .create({
+  version: 'draft-11', // 버전2
+  store: require('greenlock-store-fs'),
+  configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
+  approveDomains: (opts, certs, cb) => {
+    if (certs) {
+      opts.domains = ['oss.chatbot.bu.to', 'www.oss.chatbot.bu.to'];
+    } else {
+      opts.email = 'sweun1@naver.com';
+      opts.agreeTos = true;
+    }
+    cb(null, { options: opts, certs });
+    
+  },
   renewWithin: 81 * 24 * 60 * 60 * 1000,
   renewBy: 80 * 24 * 60 * 60 * 1000,
-}).listen(80, 443);
-
+});*/
 
 //papago api
 
 
-https.createServer(lex.httpsOptions, lex.middleware(app)).listen((process.env.SSL_PORT || 443),()=>{
-    console.log("server on 443");
-});
-http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80,()=>{
-        console.log("server on 80");
-});
 //번역 api_url
 var translate_api_url = 'https://openapi.naver.com/v1/papago/n2mt';
 
