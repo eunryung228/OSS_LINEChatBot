@@ -64,24 +64,37 @@ const client = new line.Client(config);
 const vision = require('@google-cloud/vision');
 
 // Creates a client
-const visionclient = new vision.ImageAnnotatorClient();
+var vision = require('google-vision-api-client');
 
-/**
- * TODO(developer): Uncomment the following line before running the sample.
- */
-// const fileName = 'Local image file, e.g. /path/to/image.png';
+var requtil = vision.requtil;
 
-// Performs text detection on the local file
-const [result] = visionclient.textDetection('/home/ubuntu/a/LINEBOT/photo/Fancy-TWICE.jpg');
-const detections = result.textAnnotations;
-console.log('Text:');
-detections.forEach(text => console.log(text));
+ 
 
+//Prepare your service account from trust preview certificated project
+
+var jsonfile = '/Users/terry/dev/ws/nodejs/GoogleVisionAPISample/My Project-eee0a2d4532a.json';
+
+ 
+
+//Initialize the api
+
+vision.init(jsonfile);
+
+ 
+
+//Build the request payloads
+var d = requtil.createRequests().addRequest(
+requtil.createRequest('/Users/terry/images/dale2.jpg')
+.withFeature('Optical Character Recognition', 3)
+.build());
 //Do query to the api server
 vision.query(d, function(e, r, d){
 if(e) console.log('ERROR:', e);
   console.log(JSON.stringify(d));
 });
+
+
+
 
 
 
