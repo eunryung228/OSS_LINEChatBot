@@ -1,4 +1,3 @@
-
 var express      = require("express");
 var app          = express();
 const line = require('@line/bot-sdk');
@@ -64,7 +63,7 @@ const visionclient = new vision.ImageAnnotatorClient();
 // const fileName = 'Local image file, e.g. /path/to/image.png';
 
 // Performs text detection on the local file
-const [result] = await visionclient.textDetection('/home/ubuntu/a/LINEBOT/photo/Fancy-TWICE.jpg');
+const [result] = visionclient.textDetection('/home/ubuntu/a/LINEBOT/photo/Fancy-TWICE.jpg');
 const detections = result.textAnnotations;
 console.log('Text:');
 detections.forEach(text => console.log(text));
