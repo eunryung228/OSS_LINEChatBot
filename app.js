@@ -84,7 +84,7 @@ vision.init(jsonfile);
 //Build the request payloads
 var d = requtil.createRequests().addRequest(
 requtil.createRequest('/home/ubuntu/a/LINEBOT/photo/Fancy-TWICE.jpg')
-.withFeature('Optical Character Recognition', 3)
+.withFeature('TEXT_DETECTION', 3)
 .build());
 //Do query to the api server
 vision.query(d, function(e, r, d){
