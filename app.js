@@ -18,6 +18,7 @@ var httpsOptions = {
 http.createServer(app).listen(80);
 https.createServer(httpsOptions, app).listen(443);
 */
+/*
 const lex= require('greenlock-express').create({
   version: 'draft-11', // 버전2
   store: require('greenlock-store-fs'),
@@ -41,7 +42,7 @@ https.createServer(lex.httpsOptions, lex.middleware(app)).listen((process.env.SS
 http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80,()=>{
         console.log("server on 80");
 });
-
+*/
 //papago api
 
 
@@ -174,8 +175,13 @@ function handleEvent(event) {
       else{
           console.log("status code is not 200");
       }
+      
+      
 
     });
 
     });
   }
+  app.listen(3000, function () {
+  console.log('Linebot listening on port 3000!');
+});
