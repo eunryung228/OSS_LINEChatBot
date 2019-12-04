@@ -5,7 +5,7 @@ var request = require('request');
 var https=require('https');
 var http=require('http');
 
-
+/*
 var fs = require("fs");
 
 var httpsOptions = {
@@ -14,8 +14,8 @@ var httpsOptions = {
 };
 
 http.createServer(app).listen(80);
-https.createServer(httpsOptions, app).listen(443);
-/* if ssl expired
+https.createServer(httpsOptions, app).listen(443);*/
+
 var greenlock= require('greenlock-express');
 const lex = greenlock .create({
   version: 'draft-11', // 버전2
@@ -33,7 +33,13 @@ const lex = greenlock .create({
   },
   renewWithin: 81 * 24 * 60 * 60 * 1000,
   renewBy: 80 * 24 * 60 * 60 * 1000,
-});*/
+});
+https.createServer(lex.httpsOptions, lex.middleware(app)).listen((process.env.SSL_PORT || 443),()=>{
+    console.log("server on 443");
+});
+http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80,()=>{
+        console.log("server on 80");
+});
 
 //papago api
 
