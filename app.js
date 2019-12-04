@@ -5,7 +5,7 @@ var request = require('request');
 var https=require('https');
 var http=require('http');
 
-/*
+
 var fs = require("fs");
 
 var httpsOptions = {
@@ -17,7 +17,7 @@ var httpsOptions = {
 
 http.createServer(app).listen(80);
 https.createServer(httpsOptions, app).listen(443);
-*/
+
 /*
 const lex= require('greenlock-express').create({
   version: 'draft-11', // 버전2
@@ -182,9 +182,6 @@ function handleEvent(event) {
 
     });
   }
- app.listen(443, function () {
-  console.log('Linebot listening on port 3000!');
-});
 app.get('/',(req,res)=>{
     res.send("hellow");
 })
