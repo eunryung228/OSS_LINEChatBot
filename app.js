@@ -82,11 +82,19 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 // event handler
 function handleEvent(event) {
   console.log(event.message);
-  if (event.type !== 'message' || event.message.type !== 'text') {
+  if (event.type !== 'message'&& event.message.type !== 'text') {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-  return new Promise(function(resolve, reject) {
+  if (event.type == 'message'&& event.message.type == 'image') {
+    return new Promise((resolve,reject)=>{
+      var upload = multer({ dest: 'photo/' })
+      upload.single(event.message.image);
+
+    })
+  }
+  if (event.type == 'message'&& event.message.type == 'text') {
+    return new Promise(function(resolve, reject) {
     //언어 감지 option
     var detect_options = {
       url : languagedetect_api_url,
@@ -152,6 +160,7 @@ function handleEvent(event) {
 
     });
   }
+}
 app.get('/',(req,res)=>{
     res.send("hellow");
 })
