@@ -9,8 +9,9 @@ var http=require('http');
 var fs = require("fs");
 
 var httpsOptions = {
-    key: fs.readFileSync("/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem")
+    hostname: 'oss.chatbot.bu.to',
+    key: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem')
 };
 
 http.createServer(app).listen(80);
