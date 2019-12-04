@@ -10,6 +10,7 @@ var fs = require("fs");
 
 var httpsOptions = {
     hostname: 'oss.chatbot.bu.to',
+    ca: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/oss.chatbot.bu.to/cert.pem')
 };
