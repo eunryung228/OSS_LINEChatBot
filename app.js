@@ -86,13 +86,7 @@ function handleEvent(event) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-  if (event.type == 'message'&& event.message.type == 'image') {
-    return new Promise((resolve,reject)=>{
-      var upload = multer({ dest: 'photo/' })
-      upload.single(event.message.image);
-
-    })
-  }
+  
   if (event.type == 'message'&& event.message.type == 'text') {
     return new Promise(function(resolve, reject) {
     //언어 감지 option
