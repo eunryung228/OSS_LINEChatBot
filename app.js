@@ -16,8 +16,7 @@ var httpsOptions = {
 http.createServer(app).listen(80);
 https.createServer(httpsOptions, app).listen(443);*/
 
-var greenlock= require('greenlock-express');
-const lex = greenlock .create({
+const lex= require('greenlock-express').create({
   version: 'draft-11', // 버전2
   store: require('greenlock-store-fs'),
   configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
