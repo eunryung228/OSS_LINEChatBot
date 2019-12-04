@@ -29,7 +29,7 @@ const lex = greenlock .create({
       opts.agreeTos = true;
     }
     cb(null, { options: opts, certs });
-    
+
   },
   renewWithin: 81 * 24 * 60 * 60 * 1000,
   renewBy: 80 * 24 * 60 * 60 * 1000,
@@ -63,23 +63,22 @@ const client = new line.Client(config);
 // about the middleware, please refer to doc
 
 // Creates a client
+/* google-api
 var vision = require('google-vision-api-client');
 
 var requtil = vision.requtil;
 
- 
+
 
 //Prepare your service account from trust preview certificated project
 
 var jsonfile = '/home/ubuntu/a/LINEBOT/googlevisionapikey.json';
 
- 
+
 
 //Initialize the api
 
 vision.init(jsonfile);
-
- 
 
 //Build the request payloads
 var d = requtil.createRequests().addRequest(
@@ -92,9 +91,7 @@ if(e) console.log('ERROR:', e);
   console.log(JSON.stringify(d));
 });
 
-
-
-
+*/
 
 
 app.post('/webhook', line.middleware(config), (req, res) => {
@@ -142,7 +139,7 @@ function handleEvent(event) {
               headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
 
           };
-          
+
           // Naver Post API
           console.log("?!");
           request.post(options, function(error, response, body){
@@ -175,4 +172,3 @@ function handleEvent(event) {
 
     });
   }
-
