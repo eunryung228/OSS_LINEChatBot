@@ -125,7 +125,7 @@ function handleEvent(event) {
         var $ = cheerio.load(html);
 
         lyric=$('#pLyrics > p').text();
-        lyric=lyric.substring(0, 150);
+        lyric=lyric.substring(0, 300);
 
     return new Promise(function(resolve, reject)
     {
@@ -222,7 +222,7 @@ function handleEvent(event) {
           data=data.substring(data.indexOf('text\\')+9);
           text+=data.substring(0,data.indexOf("\\"))+" ";
         }
-        text=text.substring(text.length/10+1,text.length/8+2);
+        text=text.substring(text.length/10+1,text.length/8+10);
         text=text.replace(' ','');
         text=text.substr(0,text.indexOf(' '));
         console.log(text);
