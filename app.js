@@ -47,6 +47,20 @@ const client = new line.Client(config);
 
 var songList=[]; // list to store music(singer, song, lyric url)
 
+var data = require('./event.json');
+//json 불러오기
+var data_list = data["DATA"]
+var concert_list = [];
+for(var i = 0; i < data_list.length; i++){
+    if (data_list[i].codename=="콘서트"){
+        concert_list.push(data_list[i].title);
+    }
+  }
+for(var i = 0; i < concert_list.length; i++){
+    console.log(i+1,'. ',concert_list[i],'\n');
+  }
+//콘서트 목록 만들기
+
 
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise
@@ -247,7 +261,6 @@ function handleEvent(event) {
   });
   }
   else if(event.message.text.substring(0,6)=='콘서트 보기'||event.message.text.substring(0,5)=='콘서트보기'){
-
     return new Promise(function(resolve, reject)
     {
       var showlist = { type: 'text', text:''};
@@ -260,7 +273,6 @@ function handleEvent(event) {
         client.replyMessage(event.replyToken, showlist).then(resolve).catch(reject);
     });
   }
-
   else if(0 < event.message.text.substr(0,2)*1 && event.message.text.substr(0,2)*1 < 27){
 
     var selectnum = (event.message.text.substr(0,2)*1);
@@ -270,7 +282,6 @@ function handleEvent(event) {
       result.text = '목록에 존재하지 않는 콘서트입니다.';
       return ;
     }
-
     return new Promise(function(resolve, reject){
     var concert_name = concert_list[selectnum-1];
     var $ = cheerio.load(concert_name);
@@ -286,7 +297,6 @@ function handleEvent(event) {
           q: keyword,
           type: 'video'}
     };
-
 
     request(options, function(error,result,body){
       if(error) throw new Error(error);
