@@ -200,7 +200,7 @@ function handleEvent(event) {
       };
       
       request.post(options, function (error, response, body) {
-        var data=JSON.stringify(body);  
+        var data=JSON.stringify(JSON.parse( body));  
         var text='';
         while(data.indexOf('text\\')!=-1)
         {
