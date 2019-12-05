@@ -86,7 +86,7 @@ function handleEvent(event) {
           return;
         }
       });
-      
+
     return new Promise(function(resolve, reject)
     {
       var result = { type: 'text', text:''};
@@ -125,7 +125,7 @@ function handleEvent(event) {
 
       console.log(songList[userNum].song);
       console.log(lyric);
-   
+
       //papago 언어 감지
       request.post(detect_options, (error,response,body)=>
       {
@@ -135,10 +135,10 @@ function handleEvent(event) {
           var source = '';
           var target = '';
           var result = { type: 'text', text:''};
-  
+
           //언어 감지가 제대로 됐는지 확인
           console.log(detect_body.langCode);
-  
+
           //번역은 한국어->영어 / 영어->한국어만 지원
           if(detect_body.langCode == 'ko'||detect_body.langCode == 'en')
           {
@@ -151,7 +151,7 @@ function handleEvent(event) {
                 form: {'source':source, 'target':target, 'text': lyric},
                 headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
             };
-  
+
             // Naver Post API
             request.post(options, function(error, response, body){
                 // Translate API Sucess
@@ -159,7 +159,7 @@ function handleEvent(event) {
                     // JSON
                     var objBody = JSON.parse(response.body);
                     // Message 잘 찍히는지 확인
-  
+
                     result.text = objBody.message.result.translatedText;
                     console.log("result: "+result.text);
                     //번역된 문장 보내기
@@ -183,7 +183,7 @@ function handleEvent(event) {
   });
   }
   else if (event.message.text.indexOf('http')!=-1) {
-    return new Promise(async(resolve,reject)=>{  
+    return new Promise(async(resolve,reject)=>{
       var uriBase = 'https://koreacentral.api.cognitive.microsoft.com/vision/v2.1/ocr';
       var imageUrl=event.message.text;
        var options = {
@@ -198,9 +198,9 @@ function handleEvent(event) {
         },
       body:'{"url": ' + '"' + imageUrl + '"}',
       };
-      
+
       request.post(options, function (error, response, body) {
-        var data=JSON.stringify(body); 
+        var data=JSON.stringify(body);
         console.log(data);
         var text='';
         while(data.indexOf('text\\')!=-1)
@@ -218,7 +218,7 @@ function handleEvent(event) {
             console.log(url);
             var $ = cheerio.load(html);
             const $bodyList= $('#body-content > div.search_lyrics > div.music-list-wrap.type-lyrics > table > tbody > tr');
-      
+
             var songs=[];
             $bodyList.each(function(i, elem){
               if(i<20){
@@ -226,7 +226,7 @@ function handleEvent(event) {
                   singer: $(this).find("td.info").find("a.artist.ellipsis").text().trim(),
                   song: $(this).find("td.info").find("a.title.ellipsis").text().trim(),
                 });
-              
+
               }
             })
             console.log(songs);
@@ -244,6 +244,60 @@ function handleEvent(event) {
 
           });
         });
+  });
+  }
+  else if(event.message.text.substring(0,6)=='콘서트 보기'||event.message.text.substring(0,5)=='콘서트보기'){
+
+    return new Promise(function(resolve, reject)
+    {
+      var showlist = { type: 'text', text:''};
+        for(var i = 0; i < concert_list.length; i++)
+        {
+            showlist.text+=i+1 + ". " + concert_list[i] + "\n";
+        }
+        console.log(showlist.text);
+
+        client.replyMessage(event.replyToken, showlist).then(resolve).catch(reject);
+    });
+  }
+
+  else if(0 < event.message.text.substr(0,2)*1 && event.message.text.substr(0,2)*1 < 27){
+
+    var selectnum = (event.message.text.substr(0,2)*1);
+    var result = { type: 'text', text:''};
+    console.log(selectnum);
+    if(selectnum <=0 || selectnum >=27){
+      result.text = '목록에 존재하지 않는 콘서트입니다.';
+      return ;
+    }
+
+    return new Promise(function(resolve, reject){
+    var concert_name = concert_list[selectnum-1];
+    var $ = cheerio.load(concert_name);
+    var keyword = $.text();
+    console.log(keyword);
+
+    var options = {method: 'GET',
+    url: 'https://www.googleapis.com/youtube/v3/search',
+    qs: { key: 'AIzaSyB4b-n8SSv73CLDKvFigpLPYA6yWG2JQ9A',
+          part: 'id',
+          maxResults: '1',
+          order: 'relevance',
+          q: keyword,
+          type: 'video'}
+    };
+
+
+    request(options, function(error,result,body){
+      if(error) throw new Error(error);
+      var videourl = { type: 'text', text:''};
+
+      var temp1 = body.split(':');
+      videourl.text += "https://www.youtube.com/watch?v=" + temp1[13].substr(2,11);
+
+      console.log(videourl.text);
+      client.replyMessage(event.replyToken, videourl).then(resolve).catch(reject);
+    });
   });
   }
   else{
