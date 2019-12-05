@@ -200,7 +200,8 @@ function handleEvent(event) {
       };
       
       request.post(options, function (error, response, body) {
-        var data=JSON.stringify(body);  
+        var data=JSON.stringify(body); 
+        console.log(data);
         var text='';
         while(data.indexOf('text\\')!=-1)
         {
@@ -208,6 +209,8 @@ function handleEvent(event) {
           text+=data.substring(0,data.indexOf("\\"))+" ";
         }
         text=text.substring(text.length/10+1,text.length/8+2);
+        text=text.replace(' ','');
+        text=text.substr(0,text.indexOf(' '));
         console.log(text);
         var url="https://www.genie.co.kr/search/searchLyrics?query="+text;
           request(url, function(error, response, html)
@@ -226,13 +229,17 @@ function handleEvent(event) {
               
               }
             })
+            console.log(songs);
             var resultm='';
-            for(var i=0;i<songList.length;i++){
+            for(var i=0;i<songs.length;i++){
               if(songs[i].singer!=''){
                 resultm+=songs[i].singer+", "+songs[i].song+"\n";
+                console.log(resultm);
               }
             }
-            var result = { type: 'text', text:resultm};
+            console.log(resultm);
+            var result = { type: 'text', text: resultm};
+            console.log(result);
             client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
 
           });
