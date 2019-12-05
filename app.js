@@ -236,6 +236,7 @@ function handleEvent(event) {
                 resultm+=songs[i].singer+", "+songs[i].song+"\n";
               }
             }
+            console.log(resultm);
             var result = { type: 'text', text: resultm};
             console.log(result);
             client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
