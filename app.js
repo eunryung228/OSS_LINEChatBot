@@ -235,7 +235,7 @@ function handleEvent(event) {
                 resultm+=songs[i].singer+", "+songs[i].song+"\n";
               }
             }
-            var result = { type: 'text', text:resultm};
+            var result = { type: 'text', text: resultm};
             client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
 
           });
