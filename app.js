@@ -18,33 +18,6 @@ var httpsOptions = {
 http.createServer(app).listen(80);
 https.createServer(httpsOptions, app).listen(443);
 
-/*
-const lex= require('greenlock-express').create({
-  version: 'draft-11', // 버전2
-  store: require('greenlock-store-fs'),
-  configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
-  approveDomains: (opts, certs, cb) => {
-    if (certs) {
-      opts.domains = ['oss.chatbot.bu.to', 'www.oss.chatbot.bu.to'];
-    } else {
-      opts.email = 'sweun1@naver.com';
-      opts.agreeTos = true;
-    }
-    cb(null, { options: opts, certs });
-
-  },
-  renewWithin: 81 * 24 * 60 * 60 * 1000,
-  renewBy: 80 * 24 * 60 * 60 * 1000,
-});
-https.createServer(lex.httpsOptions, lex.middleware(app)).listen((process.env.SSL_PORT || 443),()=>{
-    console.log("server on 443");
-});
-http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80,()=>{
-        console.log("server on 80");
-});
-*/
-//papago api
-
 
 //번역 api_url
 var translate_api_url = 'https://openapi.naver.com/v1/papago/n2mt';
@@ -86,7 +59,127 @@ function handleEvent(event) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-   else if (event.type == 'message'&& event.message.type == "text"&&event.message.text.indexOf('http')!=-1) {
+  else if(event.message.text.substring(0, 5)=='차트 보기')
+  {
+    // music list 출력
+    var url="https://www.genie.co.kr/chart/top200";
+
+    request(url, function(error, response, html){
+      var $ = cheerio.load(html);
+      const $bodyList= $('#body-content > div.newest-list > div > table > tbody > tr');
+
+      $bodyList.each(function(i, elem){
+        if(i<20)
+        {
+          songList.push(
+          {
+            singer: $(this).find("td.info").find("a.artist.ellipsis").text().trim(),
+            song: $(this).find("td.info").find("a.title.ellipsis").text().trim(),
+            url: 'https://www.genie.co.kr/detail/songInfo?xgnm='+$(this).attr("songid")
+          });
+        }
+        else
+        {
+          return;
+        }
+      });
+      
+    return new Promise(function(resolve, reject)
+    {
+      var result = { type: 'text', text:''};
+
+        for(var i=0; i<songList.length; i++)
+        {
+            result.text+=i+1 + ". "+ songList[i].singer+" - "+songList[i].song+"\n";
+        }
+        console.log(result.text);
+        client.replyMessage(event.replyToken, result).then(resolve).catch(reject);
+    });
+    });
+  }
+  else if(event.message.text.substring(0, 5)=='가사 검색')
+  {
+    var userNum=event.message.text[6]
+    var newUrl=songList[userNum-1].url;
+    var lyric='';
+
+    request(newUrl, function(error, response, html)
+    {
+        var $ = cheerio.load(html);
+
+        lyric=$('#pLyrics > p').text();
+        lyric=lyric.substring(0, 150);
+
+    return new Promise(function(resolve, reject)
+    {
+      //언어 감지 option
+      var detect_options =
+      {
+        url : languagedetect_api_url,
+        form : {'query': lyric},
+        headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
+      };
+
+      console.log(songList[userNum].song);
+      console.log(lyric);
+   
+      //papago 언어 감지
+      request.post(detect_options, (error,response,body)=>
+      {
+        if(!error && response.statusCode == 200)
+        {
+          var detect_body = JSON.parse(response.body);
+          var source = '';
+          var target = '';
+          var result = { type: 'text', text:''};
+  
+          //언어 감지가 제대로 됐는지 확인
+          console.log(detect_body.langCode);
+  
+          //번역은 한국어->영어 / 영어->한국어만 지원
+          if(detect_body.langCode == 'ko'||detect_body.langCode == 'en')
+          {
+            source = detect_body.langCode == 'ko' ? 'ko':'en';
+            target = source == 'ko' ? 'en':'ko';
+            //papago 번역 option
+            var options = {
+                url:  translate_api_url,
+                // 한국어(source : ko), 영어(target: en), 카톡에서 받는 메시지(text)
+                form: {'source':source, 'target':target, 'text': lyric},
+                headers: {'X-Naver-Client-Id': client_id, 'X-Naver-Client-Secret': client_secret}
+            };
+  
+            // Naver Post API
+            request.post(options, function(error, response, body){
+                // Translate API Sucess
+                if(!error && response.statusCode == 200){
+                    // JSON
+                    var objBody = JSON.parse(response.body);
+                    // Message 잘 찍히는지 확인
+  
+                    result.text = objBody.message.result.translatedText;
+                    console.log("result: "+result.text);
+                    //번역된 문장 보내기
+                    client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
+                }
+            });
+          }
+          // 메시지의 언어가 영어 또는 한국어가 아닐 경우
+          else
+          {
+            result.text = '언어를 감지할 수 없습니다. \n 번역 언어는 한글 또는 영어만 가능합니다.';
+            client.replyMessage(event.replyToken, result).then(resolve).catch(reject);
+          }
+        }
+        else
+        {
+            console.log("status code is not 200");
+        }
+      });
+    });
+  });
+  }
+  else if (event.type == 'message' && event.message.type == "text" && event.message.text.indexOf('http')!=-1) {
     return new Promise(async(resolve,reject)=>{  
       var cheerio = require('cheerio');
       var uriBase = 'https://koreacentral.api.cognitive.microsoft.com/vision/v2.1/ocr';
@@ -143,7 +236,6 @@ function handleEvent(event) {
           });
         });
   });
-        
   }
   return new Promise(function(resolve, reject) {
     //언어 감지 option
@@ -199,16 +291,11 @@ function handleEvent(event) {
           result.text = '언어를 감지할 수 없습니다. \n 번역 언어는 한글 또는 영어만 가능합니다.';
           client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
         }
-
       }
       else{
           console.log("status code is not 200");
       }
-      
-      
-
     });
-
     });
   }
 app.get('/',(req,res)=>{
