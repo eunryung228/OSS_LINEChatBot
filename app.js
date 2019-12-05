@@ -246,6 +246,60 @@ function handleEvent(event) {
         });
   });
   }
+  else if(event.message.text.substring(0,6)=='콘서트 보기'||event.message.text.substring(0,5)=='콘서트보기'){
+
+    return new Promise(function(resolve, reject)
+    {
+      var showlist = { type: 'text', text:''};
+        for(var i = 0; i < concert_list.length; i++)
+        {
+            showlist.text+=i+1 + ". " + concert_list[i] + "\n";
+        }
+        console.log(showlist.text);
+
+        client.replyMessage(event.replyToken, showlist).then(resolve).catch(reject);
+    });
+  }
+
+  else if(0 < event.message.text.substr(0,2)*1 && event.message.text.substr(0,2)*1 < 27){
+
+    var selectnum = (event.message.text.substr(0,2)*1);
+    var result = { type: 'text', text:''};
+    console.log(selectnum);
+    if(selectnum <=0 || selectnum >=27){
+      result.text = '목록에 존재하지 않는 콘서트입니다.';
+      return ;
+    }
+
+    return new Promise(function(resolve, reject){
+    var concert_name = concert_list[selectnum-1];
+    var $ = cheerio.load(concert_name);
+    var keyword = $.text();
+    console.log(keyword);
+  
+    var options = {method: 'GET',
+    url: 'https://www.googleapis.com/youtube/v3/search',
+    qs: { key: 'AIzaSyB4b-n8SSv73CLDKvFigpLPYA6yWG2JQ9A',
+          part: 'id',
+          maxResults: '1',
+          order: 'relevance',
+          q: keyword,
+          type: 'video'}
+    };
+
+    
+    request(options, function(error,result,body){
+      if(error) throw new Error(error);
+      var videourl = { type: 'text', text:''};
+
+      var temp1 = body.split(':');
+      videourl.text += "https://www.youtube.com/watch?v=" + temp1[13].substr(2,11);
+
+      console.log(videourl.text);
+      client.replyMessage(event.replyToken, videourl).then(resolve).catch(reject);
+    });
+  });
+  }
   else{
   return new Promise(function(resolve, reject) {
     //언어 감지 option
