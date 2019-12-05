@@ -231,7 +231,7 @@ function handleEvent(event) {
             })
             console.log(songs);
             var resultm='';
-            for(var i=0;i<songList.length;i++){
+            for(var i=0;i<songs.length;i++){
               if(songs[i].singer!=''){
                 resultm+=songs[i].singer+", "+songs[i].song+"\n";
                 console.log(resultm);
