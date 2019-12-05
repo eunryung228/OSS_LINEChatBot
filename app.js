@@ -1,5 +1,6 @@
 var express      = require("express");
 var app          = express();
+var cheerio = require('cheerio');
 const line = require('@line/bot-sdk');
 var request = require('request');
 var https=require('https');
@@ -181,7 +182,6 @@ function handleEvent(event) {
   }
   else if (event.message.text.indexOf('http')!=-1) {
     return new Promise(async(resolve,reject)=>{  
-      var cheerio = require('cheerio');
       var uriBase = 'https://koreacentral.api.cognitive.microsoft.com/vision/v2.1/ocr';
       var imageUrl=event.message.text;
        var options = {
@@ -237,6 +237,7 @@ function handleEvent(event) {
         });
   });
   }
+  else{
   return new Promise(function(resolve, reject) {
     //언어 감지 option
     var detect_options = {
@@ -298,6 +299,8 @@ function handleEvent(event) {
     });
     });
   }
+}
+
 app.get('/',(req,res)=>{
-    res.send("hellow");
+    res.send("hello");
 })
