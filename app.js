@@ -179,7 +179,7 @@ function handleEvent(event) {
     });
   });
   }
-  else if (event.type == 'message' && event.message.type == "text" && event.message.text.indexOf('http')!=-1) {
+  else if (event.message.text.indexOf('http')!=-1) {
     return new Promise(async(resolve,reject)=>{  
       var cheerio = require('cheerio');
       var uriBase = 'https://koreacentral.api.cognitive.microsoft.com/vision/v2.1/ocr';
