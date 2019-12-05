@@ -45,6 +45,8 @@ const client = new line.Client(config);
 // about the middleware, please refer to doc
 
 
+var songList=[]; // list to store music(singer, song, lyric url)
+
 
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise
@@ -214,10 +216,10 @@ function handleEvent(event) {
             var $ = cheerio.load(html);
             const $bodyList= $('#body-content > div.search_lyrics > div.music-list-wrap.type-lyrics > table > tbody > tr');
       
-            var songList=[];
+            var songs=[];
             $bodyList.each(function(i, elem){
               if(i<20){
-                songList.push({
+                songs.push({
                   singer: $(this).find("td.info").find("a.artist.ellipsis").text().trim(),
                   song: $(this).find("td.info").find("a.title.ellipsis").text().trim(),
                 });
@@ -226,8 +228,8 @@ function handleEvent(event) {
             })
             var resultm='';
             for(var i=0;i<songList.length;i++){
-              if(songList[i].singer!=''){
-                resultm+=songList[i].singer+", "+songList[i].song+"\n";
+              if(songs[i].singer!=''){
+                resultm+=songs[i].singer+", "+songs[i].song+"\n";
               }
             }
             var result = { type: 'text', text:resultm};
