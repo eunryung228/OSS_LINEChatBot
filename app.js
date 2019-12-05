@@ -209,7 +209,7 @@ function handleEvent(event) {
           text+=data.substring(0,data.indexOf("\\"))+" ";
         }
         text=text.substring(text.length/10+1,text.length/8+2);
-        text.replace(' ','');
+        text=text.replace(' ','+');
         console.log(text);
         var url="https://www.genie.co.kr/search/searchLyrics?query="+text;
           request(url, function(error, response, html)
