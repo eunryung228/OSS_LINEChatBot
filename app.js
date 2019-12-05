@@ -86,6 +86,65 @@ function handleEvent(event) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
+   else if (event.type == 'message'&& event.message.type == "text"&&event.message.text.indexOf('http')!=-1) {
+    return new Promise(async(resolve,reject)=>{  
+      var cheerio = require('cheerio');
+      var uriBase = 'https://koreacentral.api.cognitive.microsoft.com/vision/v2.1/ocr';
+      var imageUrl=event.message.text;
+       var options = {
+        uri: uriBase,
+        qs: {
+          'language': 'unk',
+          'detectOrientation': 'true',
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Ocp-Apim-Subscription-Key': '979dc5d63344438fa4701c62feebb7dc'
+        },
+      body:'{"url": ' + '"' + imageUrl + '"}',
+      };
+      
+      request.post(options, function (error, response, body) {
+        var data=JSON.stringify(body);  
+        var text='';
+        while(data.indexOf('text\\')!=-1)
+        {
+          data=data.substring(data.indexOf('text\\')+9);
+          text+=data.substring(0,data.indexOf("\\"))+" ";
+        }
+        text=text.substring(text.length/10+1,text.length/8+2);
+        console.log(text);
+        var url="https://www.genie.co.kr/search/searchLyrics?query="+text;
+          request(url, function(error, response, html)
+          {
+            console.log(url);
+            var $ = cheerio.load(html);
+            const $bodyList= $('#body-content > div.search_lyrics > div.music-list-wrap.type-lyrics > table > tbody > tr');
+      
+            var songList=[];
+            $bodyList.each(function(i, elem){
+              if(i<20){
+                songList.push({
+                  singer: $(this).find("td.info").find("a.artist.ellipsis").text().trim(),
+                  song: $(this).find("td.info").find("a.title.ellipsis").text().trim(),
+                });
+              
+              }
+            })
+            var resultm='';
+            for(var i=0;i<songList.length;i++){
+              if(songList[i].singer!=''){
+                resultm+=songList[i].singer+", "+songList[i].song+"\n";
+              }
+            }
+            var result = { type: 'text', text:resultm};
+            client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
+
+          });
+        });
+  });
+        
+  }
   return new Promise(function(resolve, reject) {
     //언어 감지 option
     var detect_options = {
