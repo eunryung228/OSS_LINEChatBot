@@ -229,6 +229,7 @@ function handleEvent(event) {
               
               }
             })
+            console.log(songs);
             var resultm='';
             for(var i=0;i<songList.length;i++){
               if(songs[i].singer!=''){
