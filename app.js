@@ -236,6 +236,7 @@ function handleEvent(event) {
               }
             }
             var result = { type: 'text', text: resultm};
+            console.log(result);
             client.replyMessage(event.replyToken,result).then(resolve).catch(reject);
 
           });
